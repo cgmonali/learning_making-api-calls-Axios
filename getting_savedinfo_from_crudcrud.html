@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+</head>
+<body>
+
+    <div  class="container py-2 col-md-6 col-lg-6  text-center  bg-dark bg-gradient text-white ">
+        
+        <h2 >Booking App</h2>
+        
+      </div>
+
+
+ <div  class=" container border border-dark-subtle border-5  col-md-6 col-lg-6  bg-secondary-subtle text-emphasis-secondary">
+<form action="" id="addform">
+<label for="name" class="form-label" >Name</label>
+<input type="text" id="name" placeholder="enter your name" class="form-control bg-secondary bg-gradient text-white" >
+<label for="email" class="form-label" >Email Id</label>
+<input type="email" id="email" placeholder="enter your Email Id" class="form-control bg-secondary bg-gradient text-white" >
+<label for="phone" class="form-label" >Phone Number</label>
+<input type="phone" id="phone"placeholder="enter your Phone number" class="form-control bg-secondary bg-gradient text-white" >
+<div class="col-auto">
+<button class="btn btn-warning mb-3" >submit</button>
+</div>
+</form>
+
+<ul id="ullist" class="list-group"></ul>
+
+</div>   
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.21.1/axios.min.js"></script>
+
+
+<script>
+const form=document.getElementById('addform');
+const ul=document.getElementById('ullist');
+ul.addEventListener('click',removeitem)
+
+
+
+form.addEventListener('submit',function (e){
+    e.preventDefault(); 
+
+
+    var name=document.getElementById('name').value;
+var email=document.getElementById('email').value;
+var phone =document.getElementById('phone').value;
+
+
+let objec={
+    name:name,
+    email:email,
+    phone:phone
+};
+
+
+axios.post('https://crudcrud.com/api/a5ae642e2ee74d0dae4d09cbc6787a1f/storedata',objec)
+.then((response)=>{
+    showOutput(objec);
+    console.log(response.data)
+})
+.catch((err)=>{
+    console.log(err)
+})
+
+// let objec_ser=JSON.stringify(objec);
+// localStorage.setItem(email,objec_ser);
+// // console.log(objec_ser);
+// console.log(localStorage);
+console.log("---------------------");
+
+
+
+
+
+
+
+
+
+
+});
+
+//loadeing all info stored in the crud
+
+document.addEventListener("DOMContentLoaded",()=>{
+    axios.get('https://crudcrud.com/api/a5ae642e2ee74d0dae4d09cbc6787a1f/storedata')
+.then((response)=>{
+    
+    console.log(response)
+    console.log(response.data)
+
+    for(var i=0;i<response.data.length;i++){
+
+
+
+        showOutput(response.data[i]);
+
+
+
+    }
+})
+.catch((err)=>{
+    console.log(err)
+})
+
+})
+
+
+
+
+//code to show data on screen
+
+function showOutput(objec){
+
+var list=document.createElement('li');
+list.className="list-group-item list-group-item-dark";
+list.appendChild(document.createTextNode(objec.name+' - '));
+list.appendChild(document.createTextNode(objec.email));
+list.appendChild(document.createTextNode(' - '+objec.phone));
+list.setAttribute('data-email',objec.email);
+
+var btn=document.createElement('button');
+btn.appendChild(document.createTextNode('delete'));
+list.appendChild(btn);
+btn.className='delete btn btn-danger btn-sm';
+var edit=document.createElement('button');
+edit.appendChild(document.createTextNode('edit'));
+list.appendChild(edit);
+edit.className='edit btn btn-primary btn-sm';
+
+ul.appendChild(list);
+
+}
+
+
+
+
+
+
+
+
+function removeitem(e){
+
+    if(e.target.classList.contains('delete'))  {
+    var li=e.target.parentElement;
+    ul.removeChild(li);
+
+    var delemail=li.getAttribute('data-email') ;
+console.log(delemail);
+localStorage.removeItem(delemail);
+
+  }
+
+  else if(e.target.classList.contains('edit')){
+
+    var li=e.target.parentElement;
+
+    var delemail=li.getAttribute('data-email') ;
+    var obj=JSON.parse(localStorage.getItem(delemail));
+    console.log(obj);
+     this.name=obj.name;
+     email=obj.email;
+     phone=obj.phone;
+    console.log(this.name);
+
+    var name1=document.getElementById('name');
+var email1=document.getElementById('email');
+var phone1 =document.getElementById('phone');
+name1.value=obj.name;
+email1.value=obj.email;
+phone1.value=obj.phone;
+
+
+localStorage.removeItem(delemail);
+ul.removeChild(li);
+
+  }
+
+}
+
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
